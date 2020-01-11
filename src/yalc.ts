@@ -121,14 +121,30 @@ yargs
     }
   })
   .command({
-    command: 'add',
+    command: 'add <package>',
     describe: 'Add package from yalc repo to the project',
     builder: () => {
       return yargs
-        .boolean(['file', 'dev', 'link', 'yarn', 'pure'])
-        .alias('D', 'dev')
-        .alias('save-dev', 'dev')
-        .help(true)
+        .options({
+          'dev': {
+            alias: ['D', 'save-dev'],
+            type: 'boolean',
+            desc: 'Add a link: dependency instead of file:'
+          },
+          'link': {
+            type: 'boolean',
+            desc: 'Add to devDependencies'
+          },
+          'pure': {
+            type: 'boolean',
+            desc: 'Prevents package.json and the module folder from being touched'
+          },
+          'yarn': {
+            alias: ['npm'],
+            type: 'boolean',
+            desc: 'After adding, run the package manager to install/update dependencies/bin scripts'
+          }
+        })
     },
     handler: argv => {
       const hasPureArg = process.argv.reduce(
@@ -227,4 +243,6 @@ yargs
       console.log(getStoreMainDir())
     }
   })
+  //@ts-ignore
+  .scriptName(cliCommand)
   .help('help').argv
